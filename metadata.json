@@ -1,0 +1,12 @@
+{
+  "name": "Mane-Kelsa",
+  "description": "Hyper-local work directory connecting residents with skilled workers in small towns. Find help for everything from plumbing to tailoring.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "Location-based search",
+    "Worker profiles",
+    "Smart category matching"
+  ]
+}

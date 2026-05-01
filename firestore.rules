@@ -1,0 +1,83 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() { return request.auth != null; }
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function isVerifiedUser() { return isSignedIn() && request.auth.token.email_verified == true; }
+
+    function isValidUser(data) {
+      return data.uid == request.auth.uid &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+             data.email is string && data.email.size() <= 128 &&
+             data.isWorker is bool &&
+             data.keys().hasAll(['uid', 'name', 'email', 'isWorker']) &&
+             data.keys().size() >= 4;
+    }
+
+    function isValidWorker(data) {
+      return data.userId == request.auth.uid &&
+             data.name is string && data.name.size() <= 100 &&
+             data.category is string &&
+             data.bio is string && data.bio.size() <= 1000 &&
+             data.location is string && data.location.size() <= 100 &&
+             data.phone is string && data.phone.size() <= 15 &&
+             data.keys().hasAll(['userId', 'name', 'category', 'location', 'phone']) &&
+             (data.get('rating', 0) is number) &&
+             (data.get('isVerified', false) == false || isAdmin());
+    }
+
+    function isValidReview(data) {
+      return data.authorId == request.auth.uid &&
+             data.rating is number && data.rating >= 1 && data.rating <= 5 &&
+             data.comment is string && data.comment.size() <= 500 &&
+             data.workerId is string &&
+             exists(/databases/$(database)/documents/workers/$(data.workerId));
+    }
+
+    function isAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // --- Collections ---
+
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
+      allow create: if isOwner(userId) && isValidUser(incoming()) && incoming().createdAt == request.time;
+      allow update: if isOwner(userId) && isValidUser(incoming()) && 
+                    incoming().diff(existing()).affectedKeys().hasOnly(['name', 'phoneNumber', 'isWorker', 'workerId', 'updatedAt']) &&
+                    incoming().updatedAt == request.time;
+    }
+
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /workers/{workerId} {
+      allow read: if true;
+      allow create: if isVerifiedUser() && isValidWorker(incoming()) && incoming().createdAt == request.time;
+      allow update: if isVerifiedUser() && (
+        (isOwner(existing().userId) && isValidWorker(incoming()) && 
+         incoming().diff(existing()).affectedKeys().hasOnly(['bio', 'location', 'phone', 'priceRange', 'skills', 'updatedAt'])) ||
+        (isAdmin())
+      ) && incoming().updatedAt == request.time;
+      allow delete: if isAdmin() || (isSignedIn() && isOwner(existing().userId));
+    }
+
+    match /workers/{workerId}/reviews/{reviewId} {
+      allow read: if true;
+      allow create: if isVerifiedUser() && isValidReview(incoming()) && incoming().createdAt == request.time;
+      allow delete: if isAdmin() || (isSignedIn() && isOwner(existing().authorId));
+    }
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "phoneNumber": { "type": "string" },
+        "isWorker": { "type": "boolean" },
+        "workerId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "name", "email", "isWorker"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Work category definition",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "iconName": { "type": "string" },
+        "description": { "type": "string" }
+      },
+      "required": ["name", "iconName"]
+    },
+    "Worker": {
+      "title": "Worker",
+      "description": "Detailed worker profile",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "bio": { "type": "string" },
+        "rating": { "type": "number" },
+        "reviewCount": { "type": "number" },
+        "experienceYears": { "type": "number" },
+        "location": { "type": "string" },
+        "phone": { "type": "string" },
+        "avatarUrl": { "type": "string" },
+        "priceRange": { "type": "string" },
+        "isVerified": { "type": "boolean" },
+        "skills": { "type": "array", "items": { "type": "string" } },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "name", "category", "location", "phone"]
+    },
+    "Review": {
+      "title": "Review",
+      "description": "Worker review",
+      "type": "object",
+      "properties": {
+        "workerId": { "type": "string" },
+        "authorId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "rating": { "type": "number" },
+        "comment": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["workerId", "authorId", "rating", "comment"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Collection of user profiles"
+    },
+    "/categories/{categoryId}": {
+      "schema": "Category",
+      "description": "Available work categories"
+    },
+    "/workers/{workerId}": {
+      "schema": "Worker",
+      "description": "Verified and unverified worker listings"
+    },
+    "/workers/{workerId}/reviews/{reviewId}": {
+      "schema": "Review",
+      "description": "Reviews for a specific worker"
+    }
+  }
+}

@@ -1,0 +1,57 @@
+import { Worker, Category } from '../types';
+
+export const CATEGORIES: Category[] = [
+  { id: '1', name: 'Electrical', iconName: 'Zap', description: 'Fault fixing, wiring, appliance repair' },
+  { id: '2', name: 'Plumbing', iconName: 'Droplets', description: 'Leak fixing, tap install, pipe work' },
+  { id: '3', name: 'Tailoring', iconName: 'Scissors', description: 'Dress stitching, alterations' },
+  { id: '4', name: 'Gardening', iconName: 'Leaf', description: 'Lawn mowing, plant care, landscaping' },
+  { id: '5', name: 'Cleaning', iconName: 'Sparkles', description: 'House cleaning, deep cleaning' },
+  { id: '6', name: 'Carpentry', iconName: 'Hammer', description: 'Furniture repair, wood work' },
+  { id: '7', name: 'Catering/Cooking', iconName: 'Utensils', description: 'Home cooked meals, event catering' },
+  { id: '8', name: 'Masonry', iconName: 'Brick', description: 'Wall repair, small construction' },
+];
+
+export const MOCK_WORKERS: Worker[] = [
+  {
+    id: 'w1',
+    name: 'Suresh Kumar',
+    category: 'Electrical',
+    bio: 'Certified electrician with 10 years experience in house wiring and appliance repair.',
+    rating: 4.8,
+    experienceYears: 10,
+    location: 'Gandhi Nagar',
+    phone: '+91 98765 43210',
+    avatarUrl: 'https://images.unsplash.com/photo-1540569014015-19a7be504e3a?w=150&h=150&fit=crop',
+    priceRange: '₹500 - ₹2000',
+    isVerified: true,
+    skills: ['House Wiring', 'Fan Repair', 'Motor Fixing'],
+  },
+  {
+    id: 'w2',
+    name: 'Latha M.',
+    category: 'Tailoring',
+    bio: 'Specialist in blouse stitching and dress alterations. Quick turnaround.',
+    rating: 4.9,
+    experienceYears: 15,
+    location: 'Vivekananda Road',
+    phone: '+91 98765 43211',
+    avatarUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop',
+    priceRange: '₹200 - ₹1500',
+    isVerified: true,
+    skills: ['Blouse Stitching', 'Embroidery', 'Alterations'],
+  },
+  {
+    id: 'w3',
+    name: 'Ramesh Prabhu',
+    category: 'Plumbing',
+    bio: 'Available for emergency pipe repairs and new fittings.',
+    rating: 4.5,
+    experienceYears: 5,
+    location: 'Market Square',
+    phone: '+91 98765 43212',
+    avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop',
+    priceRange: '₹300 - ₹1000',
+    isVerified: false,
+    skills: ['Tap Leaks', 'Toilet Repair', 'Tank Cleaning'],
+  },
+];
